@@ -1,37 +1,51 @@
-# Z1 Robot Arm
+## System Requirements
 
-Welcome to use the Unitree Z1 robot arm and thank you for your purchase.
+- **Operating System**: Ubuntu 18.04 (ROS Melodic) or Ubuntu 20.04 (ROS Noetic, recommended).  
+- **ROS**: Desktop-Full installation required.  
+- **Dependencies**: `libboost-dev`, `libeigen3-dev`, and other packages installed via `rosdep`.  
+- **Hardware**:  
+  - PC with at least Intel i5/i7 or equivalent.  
+  - Ethernet port for direct connection to the Z1 controller.  
 
-This document contains information about the installation and commissioning of the Z1 robot arm, and how to do secondary development based on the API.
+---
 
-## Abstract
+## Installation Workflow
 
-Z1 can realize various upper-level control modes such as joint space control, Cartesian space control, etc. It can also realize the low-level control of the underlying joint motors, based on which users can develop their own control algorithms. To achieve the above control relies on the use of the robotic arm SDK. 
+1. **On the Z1 Controller**  
+   - Runs the `z1_controller` service for hardware communication.  
 
-## SDK Download
+2. **On the Development PC (Ubuntu)**  
+   - Install `z1_sdk` to send commands.  
+   - Install `unitree_ros` and `unitree_legged_msgs` to use ROS interfaces.  
+   - Build all packages in a `catkin_ws`.  
 
-+ Controller：[z1_controller](https://github.com/unitreerobotics/z1_controller)
-+ SDK Interface：[z1_sdk](https://github.com/unitreerobotics/z1_sdk)
-+ ROS simulation：[unitree_ros](https://github.com/unitreerobotics/unitree_ros), [unitree_legged_msgs](https://github.com/unitreerobotics/unitree_ros_to_real)
+---
 
-## Cautions
+## Simulation vs Real Hardware
 
-1. Be sure to install the robot arm and connect the cables according to the requirements in this manual
+- **Simulation** (Gazebo + RViz)  
+  - Safest environment to develop algorithms.  
+  - Run `roslaunch unitree_ros z1_gazebo.launch`.  
 
-2. Ensure that the robot arm does not collide with people or other objects within its range of activity to avoid accidents
+- **Real Hardware**  
+  - Connect via Ethernet (default IP `192.168.123.xxx`).  
+  - Verify network setup with `ping`.  
+  - Launch controller with `roslaunch unitree_ros z1_control.launch`.  
 
-3. Professional staff is required for commissioning before controlling the robot arm
+---
 
-4. When using the SDK, you must ensure that the input parameters and operational procedures are correct
+## Typical Development Workflow
 
-5. The robot arm will generate heat during operation, so please do not touch it during operation or when it has just stopped
+1. Start `roscore`.  
+2. Run simulation or connect to hardware.  
+3. Send commands using SDK API (C++/Python).  
+4. Monitor feedback topics (e.g. `/z1/joint_states`).  
+5. Iterate with your custom control algorithms.  
 
-6. Please pay attention to the operation speed of the robot arm, be careful when it is too fast
+---
 
-7. Be sure to power off when the robot arm is finished using
+## Troubleshooting
 
-8. Be sure to turn off the control program after the robot arm is powered off
-
-9. Avoid using the robot arm in wet or dusty environments
-
-10. Please be sure to store and install the robot arm in a place where children cannot touch it to avoid danger
+- **Cannot connect to arm** → Check Ethernet IP configuration.  
+- **ROS node fails** → Ensure `roscore` is running and sourced (`source ~/catkin_ws/devel/setup.bash`).  
+- **Arm not moving** → Verify power is on, E-stop released, and commissioning completed.  
